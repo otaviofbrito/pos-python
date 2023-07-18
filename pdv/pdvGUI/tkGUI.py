@@ -13,9 +13,9 @@ endereco = Endereco("Rua X", "", 5, "Alfenas", "Aeroporto", "MG", "37130-000")
 loja = Loja("Supermercado Preço Bão", endereco)
 registradora = loja.getRegistradora("R01")
 
-
-
+#BACKEND SETTINGS
 class Funcs():
+
     def start_new_sale(self):
         registradora.criarNovaVenda()
         self.button_1.config(state=tkinter.DISABLED)
@@ -33,7 +33,7 @@ class Funcs():
         registradora.entrarItem(produto, int(qtd))
 
         self.qtdP_label.configure(text="qtd. produtos: " + str(registradora.getVendaCorrente().getItemQuantity()))
-        total = registradora.getVendaCorrente().calcularTotalVenda()
+        total = round(registradora.getVendaCorrente().calcularTotalVenda(), 3)
         self.subt_label.configure(text="subtotal: R$" + str(total))
 
         self.qtd_itens_spinbox.config(state="normal")
@@ -44,15 +44,12 @@ class Funcs():
 
     def end_sale(self):
         registradora.finalizarVenda()
-        total = registradora.getVendaCorrente().calcularTotalVenda()
+        total = round(registradora.getVendaCorrente().calcularTotalVenda(),3)
         self.total_label.configure(text="Total: R$" + str(total))
         self.switch_widgets3("normal")
         self.combo_box_payment.config(state="readonly")
         self.combo_box_issuer.config(state="readonly")
         self.parcelas_spinbox.config(state="readonly")
-
-
-
 
         self.switch_widgets2("disabled")
         self.button_1.config(state=tkinter.NORMAL)
@@ -73,8 +70,6 @@ class Funcs():
 
     def issuer_cb_selection(self, event):
         self.payment_button.config(state=tkinter.NORMAL)
-
-
 
     def payment_cb_selection(self, event):
         selected = self.combo_box_payment.get()
@@ -131,7 +126,6 @@ class Funcs():
         else:
             inst = self.inst_entry.get()
             registradora.fazerPagamentoCheque(totalVenda, str(inst))
-
 
         self.switch_widgets3("disabled")
         self.reset_widgets()
@@ -196,7 +190,7 @@ class Funcs():
             value = float(entered_text)
             if value >= totalVenda:
                 self.payment_button.config(state=tkinter.NORMAL)
-                troco = value - totalVenda
+                troco = round(value - totalVenda, 3)
                 self.change_label.configure(text="Troco: R$" + str(troco))
             else:
                 self.change_label.configure(text="Troco: R$0,00")
@@ -223,9 +217,6 @@ class App(Funcs):
         root.mainloop()
 
 
-
-
-
     #disable/enable frame2 interaction
     def switch_widgets2(self, status):
         for widget in self.frame_2.winfo_children():
@@ -238,29 +229,35 @@ class App(Funcs):
 
 
 
-
+    #FRONT END SETTINGS
     def tela(self):
-        self.root.title("Market management")
-        self.root.configure(background="grey")
+        self.root.title("Supermercado Preço Bão!")
+        self.root.configure(background="#46948e")
         self.root.geometry("633x477")
         self.root.resizable(False, False)
 
     def frames(self):
-        self.frame_1 = Frame(self.root)
-        self.frame_1.place(relx=0.008, rely=0.008, relwidth=0.98, relheight=0.16)
+        self.frame_1 = Frame(self.root, bg='#d2d8d9')
+        self.frame_1.place(relx=0.008, rely=0, relwidth=0.98, relheight=0.2)
 
         self.frame_2 = Frame(self.root)
-        self.frame_2.place(relx=0.008, rely=0.175, relwidth=0.98, relheight=0.4)
+        self.frame_2.place(relx=0.008, rely=0.21, relwidth=0.98, relheight=0.4)
 
         self.frame_3 = Frame(self.root)
-        self.frame_3.place(relx=0.008, rely=0.6, relwidth=0.98, relheight=0.38)
+        self.frame_3.place(relx=0.008, rely=0.62, relwidth=0.98, relheight=0.37)
 
     def widgets_frame1(self):
-        self.button_1 = Button(self.frame_1, text="Nova venda", command=self.start_new_sale)
-        self.button_1.place(relx=0.4, rely=0.45, relwidth=0.2, relheight=0.2)
+        self.button_1 = Button(self.frame_1, text="Nova venda", command=self.start_new_sale, font=("bold"))
+        self.button_1.place(relx=0.4, rely=0.45, relwidth=0.2, relheight=0.35)
 
-        self.adress_label = Label(self.frame_1, text=loja.getNome())
-        self.adress_label.place(relx=0.25, rely=0.2, relwidth=0.5, relheight=0.15)
+        self.adress_label = Label(self.frame_1, text="Registradora", bg='#d2d8d9')
+        self.adress_label.place(relx=0.4, rely=0.1, relwidth=0.2, relheight=0.2)
+
+        self.photo1 = PhotoImage(file='marketpixel.png')
+
+        self.adress_label = Label(self.frame_1, text="", image=self.photo1, compound=BOTTOM, bg='#d2d8d9')
+        self.adress_label.place(relx=0.60, rely=0.05, relwidth=0.2, relheight=1)
+
 
     def widgets_frame2(self):
         self.addP_label = Label(self.frame_2, text="Adicionar Produto")
@@ -287,7 +284,7 @@ class App(Funcs):
         self.qtdP_label = Label(self.frame_2, text="qtd. produtos: 0")
         self.qtdP_label.place(relx=0.65, rely=0.18, relwidth=0.2, relheight=0.15)
 
-        self.slcP_label = Label(self.frame_2, text="Produto", fg="blue")
+        self.slcP_label = Label(self.frame_2, text="Produto", fg="blue", font=("Arial", 12, "bold italic"))
         self.slcP_label.pack(side=LEFT, padx=10)
 
         self.subt_label = Label(self.frame_2, text="subtotal: R$0.00 ", fg="blue")
@@ -300,7 +297,7 @@ class App(Funcs):
         self.payment_label = Label(self.frame_3, text="Pagamento")
         self.payment_label.place(relx=0.01, rely=0.05, relwidth=0.2, relheight=0.15)
 
-        self.total_label = Label(self.frame_3, text="Total: R$0.00", fg="red",  font=("Arial", 15))
+        self.total_label = Label(self.frame_3, text="Total: R$0.00", fg="red",  font=("Arial", 15, "bold"))
         self.total_label.place(relx=0.65, rely=0.05, relwidth=0.3, relheight=0.2)
 
         self.combo_box_payment = Combobox(self.frame_3, values=["Dinheiro", "Crédito", "Cheque"])
@@ -340,10 +337,7 @@ class App(Funcs):
         self.inst_entry.place(relx=0.2, rely=0.6, relwidth=0.2, relheight=0.15)
         self.inst_entry.bind('<KeyRelease>', self.inst_evlistener)
 
-
-
-
-        self.payment_button = Button(self.frame_3, text="Efetuar Pagamento", command=self.make_payment)
+        self.payment_button = Button(self.frame_3, text="Efetuar Pagamento", command=self.make_payment,fg='#127a4f',font=("Arial", 12, "bold"))
         self.payment_button.place(relx=0.68, rely=0.75, relwidth=0.3, relheight=0.15)
 
 App()
