@@ -194,6 +194,9 @@ class Funcs():
                 self.change_label.configure(text="Troco: R$" + str(troco))
             else:
                 self.change_label.configure(text="Troco: R$0,00")
+                self.payment_button.config(state=tkinter.DISABLED)
+
+
     def is_valid_change(self, input):
         try:
             value = float(input)
